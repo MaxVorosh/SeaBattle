@@ -11,4 +11,39 @@
       <ProjectReference Include="..\GameClasses\GameClasses.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Remove="data\rotate.png" />
+      <Resource Include="data\rotate.png" />
+      <None Remove="data\delete.png" />
+      <Resource Include="data\delete.png" />
+      <None Remove="data\delete_aq.png" />
+      <Resource Include="data\delete_aq.png" />
+      <None Remove="data\rotate_aq.png" />
+      <Resource Include="data\rotate_aq.png" />
+      <None Remove="data\ship1.png" />
+      <Resource Include="data\ship1.png" />
+      <None Remove="data\ship1_aq.png" />
+      <Resource Include="data\ship1_aq.png" />
+      <None Remove="data\ship2.png" />
+      <Resource Include="data\ship2.png" />
+      <None Remove="data\ship2_aq.png" />
+      <Resource Include="data\ship2_aq.png" />
+      <None Remove="data\ship3.png" />
+      <Resource Include="data\ship3.png" />
+      <None Remove="data\ship3_aq.png" />
+      <Resource Include="data\ship3_aq.png" />
+      <None Remove="data\ship4.png" />
+      <Resource Include="data\ship4.png" />
+      <None Remove="data\ship4_aq.png" />
+      <Resource Include="data\ship4_aq.png" />
+      <None Remove="data\ship4_aq_s.png" />
+      <Resource Include="data\ship4_aq_s.png" />
+      <None Remove="data\ship3_aq_s.png" />
+      <Resource Include="data\ship3_aq_s.png" />
+      <None Remove="data\ship2_aq_s.png" />
+      <Resource Include="data\ship2_aq_s.png" />
+      <None Remove="data\ship1_aq_s.png" />
+      <Resource Include="data\ship1_aq_s.png" />
+    </ItemGroup>
+
 </Project>

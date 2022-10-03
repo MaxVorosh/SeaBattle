@@ -7,14 +7,27 @@
   "targets": {
     ".NETCoreApp,Version=v6.0": {
       "SeaBattle/1.0.0": {
+        "dependencies": {
+          "GameClasses": "1.0.0"
+        },
         "runtime": {
           "SeaBattle.dll": {}
+        }
+      },
+      "GameClasses/1.0.0": {
+        "runtime": {
+          "GameClasses.dll": {}
         }
       }
     }
   },
   "libraries": {
     "SeaBattle/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "GameClasses/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

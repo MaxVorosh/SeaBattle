@@ -5,8 +5,39 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SeaBattle"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-
+        Title="MainWindow" Height="400" Width="800">
+    <Grid Background="Aquamarine">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Border Grid.Column="0" BorderBrush="Navy" BorderThickness="1" VerticalAlignment="Center"
+                HorizontalAlignment="Center">
+            <Grid VerticalAlignment="Center" HorizontalAlignment="Center" x:Name="Board">
+            </Grid>
+        </Border>
+        <Grid Grid.Column="1" x:Name="Buttons">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="0.25*"/>
+                <RowDefinition Height="0.25*"/>
+                <RowDefinition Height="0.35*"/>
+                <RowDefinition Height="0.15*"/>
+            </Grid.RowDefinitions>
+            <Button Grid.Row="0" Grid.Column="4" Background="Aquamarine" Width="50" Height="50"
+                    Click="RotateCurrentShip">
+                <Image Source="data\rotate_aq.png" />
+            </Button>
+            <Button Grid.Row="0" Grid.Column="3" Background="Aquamarine" Width="50" Height="50"
+                    Click="DeleteCurrentShip">
+                <Image Source="data\delete_aq.png" />
+            </Button>
+        </Grid>
     </Grid>
 </Window>
