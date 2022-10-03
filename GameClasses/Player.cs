@@ -7,6 +7,7 @@ public class Player
     public HideBoard oppositeBoard;
     public List<Tuple<int, int>> currentShip;
     private Random rnd;
+    public bool isMoveStarted;
     
     public Player(bool isComputer, Board playerBoard, Board oppositeBoard)
     {
@@ -15,6 +16,7 @@ public class Player
         this.oppositeBoard = new HideBoard(oppositeBoard);
         currentShip = new List<Tuple<int, int>>();
         rnd = new Random();
+        isMoveStarted = false;
     }
 
     public Tuple<int, int> GetNextComputerShot(int minX, int maxX, int minY, int maxY)
@@ -51,6 +53,28 @@ public class Player
         {
             currentShip = new List<Tuple<int, int>>();
         }
+
+        if (result == ShootResult.Missed)
+        {
+            isMoveStarted = false;
+        }
+    }
+
+    List<Tuple<int, int>> GetCanShootTiles()
+    {
+        List<Tuple<int, int>> canShoot = new List<Tuple<int, int>>();
+        for (int i = 0; i < 10; ++i)
+        {
+            for (int j = 0; j < 10; ++j)
+            {
+                if (!oppositeBoard.IsShooted(i, j))
+                {
+                    canShoot.Add(new Tuple<int, int>(i, j));
+                }
+            }
+        }
+
+        return canShoot;
     }
 
     public bool MakeComputerMove()
@@ -84,17 +108,7 @@ public class Player
         }
         else
         {
-            List<Tuple<int, int>> canShoot = new List<Tuple<int, int>>();
-            for (int i = 0; i < 10; ++i)
-            {
-                for (int j = 0; j < 10; ++j)
-                {
-                    if (!oppositeBoard.IsShooted(i, j))
-                    {
-                        canShoot.Add(new Tuple<int, int>(i, j));
-                    }
-                }
-            }
+            List<Tuple<int, int>> canShoot = GetCanShootTiles();
             newShot = canShoot[rnd.Next() % canShoot.Count];
         }
         UpdateDataAfterShot(newShot.Item1, newShot.Item2);
@@ -107,7 +121,12 @@ public class Player
         {
             return false;
         }
-        oppositeBoard.OpenTile(x, y);
+        UpdateDataAfterShot(x, y);
         return true;
+    }
+
+    public bool IsLose()
+    {
+        return oppositeBoard.aliveTiles == 0;
     }
 }

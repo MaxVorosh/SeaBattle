@@ -4,6 +4,7 @@ public class HideBoard
 {
     public TileCondition[,] board;
     public Board linkedBoard;
+    public int aliveTiles = 0;
 
     public HideBoard(Board linkedBoard)
     {
@@ -13,6 +14,7 @@ public class HideBoard
             for (int j = 0; j < 10; ++j)
             {
                 board[i, j] = TileCondition.Unknown;
+                aliveTiles += Convert.ToInt32(linkedBoard.board[i, j]);
             }
         }
 
@@ -24,6 +26,7 @@ public class HideBoard
         if (linkedBoard.board[x, y])
         {
             board[x, y] = TileCondition.Hit;
+            aliveTiles--;
         }
         else
         {
