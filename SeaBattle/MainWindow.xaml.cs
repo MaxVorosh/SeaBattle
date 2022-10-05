@@ -24,11 +24,19 @@ namespace SeaBattle
         private BoardViewModel board;
         private List<Border> currentShip;
         private Border?[,] ships;
+        private Button currentButtonShip;
+        private Stack<Button>[] hiddenButtons;
         public MainWindow()
         {
             board = new BoardViewModel(new Board());
             currentShip = new List<Border>();
             ships = new Border[10, 10];
+            currentButtonShip = new Button();
+            hiddenButtons = new Stack<Button>[4];
+            for (int i = 0; i < 4; ++i)
+            {
+                hiddenButtons[i] = new Stack<Button>();
+            }
             InitializeComponent();
             SetBoardGrid();
             SetButtons();
@@ -68,6 +76,7 @@ namespace SeaBattle
             var button = (Button)e.Source;
             int length = ((int)button.Height - 1) / 30 + 1;
             board.SetShip(length);
+            currentButtonShip = button;
         }
 
         public void SetBoardGrid()
@@ -108,6 +117,7 @@ namespace SeaBattle
         
         public void StartGame(object sender, RoutedEventArgs e)
         {
+            this.Close();
         }
 
         public void UpdateBoard()
@@ -129,6 +139,7 @@ namespace SeaBattle
                     else if (!board.IsShip(i, j) && ships[i, j] != null)
                     {
                         Board.Children.Remove(ships[i, j]);
+                        ships[i, j] = null;
                     }
                 }
             }
@@ -142,8 +153,23 @@ namespace SeaBattle
             var y = Convert.ToInt32(p.Y - 1);
             if (x < 0 || y < 0 || x >= 300 || y >= 300)
                 return;
-            board.Click(x, y);
+            ClickResult moveResult = board.Click(x, y);
+            if (moveResult == ClickResult.Sleep)
+            {
+                return;
+            }
             UpdateBoard();
+            if (moveResult == ClickResult.Put)
+            {
+                currentButtonShip.Visibility = Visibility.Hidden;
+                hiddenButtons[board.GetLastLength() - 1].Push(currentButtonShip);
+                currentButtonShip = new Button();
+                return;
+            }
+
+            int shipLength = board.GetLastDeleteLength();
+            var button = hiddenButtons[shipLength - 1].Pop();
+            button.Visibility = Visibility.Visible;
         }
 
         public void SetLighting(object sender, MouseEventArgs e)

@@ -6,6 +6,8 @@ public class BoardViewModel
     private int currentLength;
     private bool isHorizontal;
     private bool prepareDelete;
+    private int lastDeleteResult;
+    private int lastLength;
 
     public BoardViewModel(Board board)
     {
@@ -13,6 +15,8 @@ public class BoardViewModel
         currentLength = -1;
         isHorizontal = false;
         prepareDelete = false;
+        lastDeleteResult = -1;
+        lastLength = -1;
     }
 
     public void ChangeRotation()
@@ -22,6 +26,7 @@ public class BoardViewModel
 
     public void SetShip(int length)
     {
+        lastLength = currentLength;
         currentLength = length;
     }
 
@@ -66,41 +71,72 @@ public class BoardViewModel
         return new Tuple<int, int>(xCoord / 30, yCoord / 30);
     }
 
-    public void PutShip(int x, int y)
+    public ClickResult PutShip(int x, int y)
     {
         var canPut = CanPutShip(x, y);
         if (!canPut.Item1)
         {
+            lastLength = currentLength;
             currentLength = -1;
-            return;
+            return ClickResult.Sleep;
         }
 
+        bool result;
         if (isHorizontal)
         {
-            board.AddShip(x, y, x + currentLength - 1, y);
+            result = board.AddShip(x, y, x + currentLength - 1, y);
         }
         else
         {
-            board.AddShip(x, y, x, y + currentLength - 1);
+            result = board.AddShip(x, y, x, y + currentLength - 1);
         }
+
+        if (result)
+        {
+            return ClickResult.Put;
+        }
+
+        return ClickResult.Sleep;
     }
 
-    public void DeleteShip(int x, int y)
+    public ClickResult DeleteShip(int x, int y)
     {
-        board.DeleteShip(x, y);
+        int result = board.DeleteShip(x, y);
+        lastDeleteResult = result;
+        if (result == 0)
+        {
+            return ClickResult.Sleep;
+        }
+        return ClickResult.Delete;
     }
 
-    public void Click(int xCoord, int yCoord)
+    public int GetLastDeleteLength()
+    {
+        return lastDeleteResult;
+    }
+
+    public int GetLastLength()
+    {
+        return lastLength;
+    }
+
+    public ClickResult Click(int xCoord, int yCoord)
     {
         var tile = GetTile(xCoord, yCoord);
+        var clickResult = ClickResult.Sleep;
         if (prepareDelete)
         {
-            DeleteShip(tile.Item2, tile.Item1);
+            prepareDelete = false;
+            clickResult = DeleteShip(tile.Item2, tile.Item1);
         }
-        else if (currentLength != -1)
+        if (currentLength != -1)
         {
-            PutShip(tile.Item2, tile.Item1);
+            clickResult = PutShip(tile.Item2, tile.Item1);
         }
+
+        lastLength = currentLength;
+        currentLength = -1;
+        return clickResult;
     }
 
     public bool IsShip(int x, int y)

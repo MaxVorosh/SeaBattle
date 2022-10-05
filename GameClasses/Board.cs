@@ -31,6 +31,7 @@ public class Board
                     {
                         return false;
                     }
+
                     if (i < 0 || j < 0 || i >= 10 || j >= 10)
                     {
                         return false;
@@ -42,11 +43,11 @@ public class Board
         return true;
     }
 
-    public void AddShip(int startX, int startY, int endX, int endY)
+    public bool AddShip(int startX, int startY, int endX, int endY)
     {
         if (!CheckShipPosition(startX, startY, endX, endY))
         {
-            return;
+            return false;
         }
 
         for (int i = startX; i <= endX; ++i)
@@ -56,23 +57,33 @@ public class Board
                 board[i, j] = true;
             }
         }
+
+        return true;
     }
 
-    public void DeleteShip(int x, int y)
+    public int DeleteShip(int x, int y)
     {
+        int result = 0;
         int[] movesX = { 1, -1, 0, 0 };
         int[] movesY = { 0, 0, 1, -1 };
         for (int i = 0; i < 4; ++i)
         {
             int currentX = x;
             int currentY = y;
-            while (currentX >= 0 && currentX < 10 && currentY >= 0 && currentY < 10 && board[currentX, currentY])
+            while (currentX >= 0 && currentX < 10 && currentY >= 0 && currentY < 10 &&
+                   (board[currentX, currentY] || (currentX == x && currentY == y)))
             {
+                if (board[currentX, currentY])
+                {
+                    result++;
+                }
                 board[currentX, currentY] = false;
                 currentX += movesX[i];
                 currentY += movesY[i];
             }
         }
+
+        return result;
     }
 
     public static void Main(string[] args)
