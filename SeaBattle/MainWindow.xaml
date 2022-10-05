@@ -12,9 +12,9 @@
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <Border Grid.Column="0" BorderBrush="Navy" BorderThickness="1" VerticalAlignment="Center"
-                HorizontalAlignment="Center">
-            <Grid VerticalAlignment="Center" HorizontalAlignment="Center" x:Name="Board" MouseDown="BoardClick"
-                  MouseMove="SetLighting" MouseLeave="DeleteLighting">
+                HorizontalAlignment="Center" x:Name="BoardBorder" MouseDown="SetShip" Background="Aquamarine">
+            <Grid VerticalAlignment="Center" HorizontalAlignment="Center" x:Name="Board"
+                  MouseMove="SetLighting" MouseLeave="DeleteLighting" >
             </Grid>
         </Border>
         <Grid Grid.Column="1" x:Name="Buttons">

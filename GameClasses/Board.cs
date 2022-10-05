@@ -15,17 +15,23 @@ public class Board
     {
         Tuple<int, int>[] moves =
         {
-            new Tuple<int, int>(1, 0), new Tuple<int, int>(-1, 0), new Tuple<int, int>(0, -1), new Tuple<int, int>(0, 1)
+            new Tuple<int, int>(1, 0), new Tuple<int, int>(-1, 0), new Tuple<int, int>(0, -1),
+            new Tuple<int, int>(0, 1), new Tuple<int, int>(-1, 1), new Tuple<int, int>(-1, -1),
+            new Tuple<int, int>(1, -1), new Tuple<int, int>(1, 1)
         };
         for (int i = startX; i <= endX; ++i)
         {
-            for (int j = startY; i <= endY; ++j)
+            for (int j = startY; j <= endY; ++j)
             {
-                for (int k = 0; k < 4; ++k)
+                for (int k = 0; k < 8; ++k)
                 {
                     int newX = i + moves[k].Item1;
                     int newY = j + moves[k].Item2;
                     if (newX >= 0 && newY >= 0 && newX < 10 && newY < 10 && board[newX, newY])
+                    {
+                        return false;
+                    }
+                    if (i < 0 || j < 0 || i >= 10 || j >= 10)
                     {
                         return false;
                     }
@@ -45,7 +51,7 @@ public class Board
 
         for (int i = startX; i <= endX; ++i)
         {
-            for (int j = startY; i <= endY; ++j)
+            for (int j = startY; j <= endY; ++j)
             {
                 board[i, j] = true;
             }
@@ -69,5 +75,7 @@ public class Board
         }
     }
 
-    public static void Main(string[] args) {}
+    public static void Main(string[] args)
+    {
+    }
 }

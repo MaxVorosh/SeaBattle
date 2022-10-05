@@ -23,10 +23,12 @@ namespace SeaBattle
     {
         private BoardViewModel board;
         private List<Border> currentShip;
+        private Border?[,] ships;
         public MainWindow()
         {
             board = new BoardViewModel(new Board());
             currentShip = new List<Border>();
+            ships = new Border[10, 10];
             InitializeComponent();
             SetBoardGrid();
             SetButtons();
@@ -101,21 +103,47 @@ namespace SeaBattle
         
         public void DeleteCurrentShip(object sender, RoutedEventArgs e)
         {
+            board.PrepareToDelete();
         }
         
         public void StartGame(object sender, RoutedEventArgs e)
         {
         }
 
-        public void BoardClick(object sender, MouseButtonEventArgs e)
+        public void UpdateBoard()
+        {
+            for (int i = 0; i < 10; ++i)
+            {
+                for (int j = 0; j < 10; ++j)
+                {
+                    if (board.IsShip(i, j) && ships[i, j] == null)
+                    {
+                        ships[i, j] = new Border();
+                        ships[i, j].Background = new SolidColorBrush(Colors.Teal);
+                        ships[i, j].BorderBrush = new SolidColorBrush(Colors.Navy);
+                        ships[i, j].BorderThickness = new Thickness(1);
+                        Board.Children.Add(ships[i, j]);
+                        Grid.SetColumn(ships[i, j], j);
+                        Grid.SetRow(ships[i, j], i);
+                    }
+                    else if (!board.IsShip(i, j) && ships[i, j] != null)
+                    {
+                        Board.Children.Remove(ships[i, j]);
+                    }
+                }
+            }
+        }
+
+        private void SetShip(object sender, MouseButtonEventArgs e)
         {
             var p = e.GetPosition(this);
             p = PrepareWindow.TranslatePoint(p, Board);
-            var x = Convert.ToInt32(p.X - 2);
-            var y = Convert.ToInt32(p.Y - 2);
+            var x = Convert.ToInt32(p.X - 1);
+            var y = Convert.ToInt32(p.Y - 1);
             if (x < 0 || y < 0 || x >= 300 || y >= 300)
                 return;
             board.Click(x, y);
+            UpdateBoard();
         }
 
         public void SetLighting(object sender, MouseEventArgs e)
@@ -127,7 +155,7 @@ namespace SeaBattle
             var y = Convert.ToInt32(p.Y - 1);
             if (x < 0 || y < 0 || x >= 300 || y >= 300)
                 return;
-            var result = board.CanPutShip(x / 30, y / 30);
+            var result = board.CanPutShip(y / 30, x / 30);
             SolidColorBrush color;
             if (result.Item1)
             {
@@ -144,9 +172,10 @@ namespace SeaBattle
                 border.Background = color;
                 border.BorderThickness = new Thickness(1);
                 border.BorderBrush = new SolidColorBrush(Colors.Navy);
+                border.MouseDown += new MouseButtonEventHandler(SetShip);
                 Board.Children.Add(border);
-                Grid.SetColumn(border, tile.Item1);
-                Grid.SetRow(border, tile.Item2);
+                Grid.SetColumn(border, tile.Item2);
+                Grid.SetRow(border, tile.Item1);
                 currentShip.Add(border);
             }
         }

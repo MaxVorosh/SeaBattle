@@ -27,35 +27,33 @@ public class BoardViewModel
 
     public Tuple<bool, List<Tuple<int, int>>> CanPutShip(int x, int y)
     {
-        bool canPut = true;
         List<Tuple<int, int>> occupiedTiles = new List<Tuple<int, int>>();
+        int oldX = x;
+        int oldY = y;
         for (int i = 0; i < currentLength; ++i)
         {
             if (0 <= x && x < 10 && 0 <= y && y < 10)
             {
                 occupiedTiles.Add(new Tuple<int, int>(x, y));
-                if (board.board[x, y])
+                if (i != currentLength - 1)
                 {
-                    canPut = false;
-                }
-
-                if (isHorizontal)
-                {
-                    x++;
-                }
-                else
-                {
-                    y++;
+                    if (isHorizontal)
+                    {
+                        x++;
+                    }
+                    else
+                    {
+                        y++;
+                    }
                 }
             }
             else
             {
-                canPut = false;
                 break;
             }
         }
-
-        return new Tuple<bool, List<Tuple<int, int>>>(canPut, occupiedTiles);
+        return new Tuple<bool, List<Tuple<int, int>>>(board.CheckShipPosition(oldX, oldY, x, y),
+            occupiedTiles);
     }
 
     public void PrepareToDelete()
@@ -79,11 +77,11 @@ public class BoardViewModel
 
         if (isHorizontal)
         {
-            board.AddShip(x, y, x + currentLength, y);
+            board.AddShip(x, y, x + currentLength - 1, y);
         }
         else
         {
-            board.AddShip(x, y, x, y + currentLength);
+            board.AddShip(x, y, x, y + currentLength - 1);
         }
     }
 
@@ -97,11 +95,16 @@ public class BoardViewModel
         var tile = GetTile(xCoord, yCoord);
         if (prepareDelete)
         {
-            DeleteShip(tile.Item1, tile.Item2);
+            DeleteShip(tile.Item2, tile.Item1);
         }
         else if (currentLength != -1)
         {
-            PutShip(tile.Item1, tile.Item2);
+            PutShip(tile.Item2, tile.Item1);
         }
+    }
+
+    public bool IsShip(int x, int y)
+    {
+        return board.board[x, y];
     }
 }
