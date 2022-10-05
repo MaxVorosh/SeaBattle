@@ -46,9 +46,9 @@ public class HideBoard
                         board[neighbourX, neighbourY] = TileCondition.Missed;
                     }
                 }
+                currentX += movesX[i];
+                currentY += movesY[i];
             }
-            currentX += movesX[i];
-            currentY += movesY[i];
         }
     }
 
