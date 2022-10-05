@@ -21,8 +21,12 @@ namespace SeaBattle
     /// </summary>
     public partial class MainWindow : Window
     {
+        private BoardViewModel board;
+        private List<Border> currentShip;
         public MainWindow()
         {
+            board = new BoardViewModel(new Board());
+            currentShip = new List<Border>();
             InitializeComponent();
             SetBoardGrid();
             SetButtons();
@@ -59,6 +63,9 @@ namespace SeaBattle
 
         public void ShipClick(object sender, RoutedEventArgs e)
         {
+            var button = (Button)e.Source;
+            int length = ((int)button.Height - 1) / 30 + 1;
+            board.SetShip(length);
         }
 
         public void SetBoardGrid()
@@ -89,11 +96,73 @@ namespace SeaBattle
 
         public void RotateCurrentShip(object sender, RoutedEventArgs e)
         {
+            board.ChangeRotation();
         }
         
         public void DeleteCurrentShip(object sender, RoutedEventArgs e)
         {
         }
         
+        public void StartGame(object sender, RoutedEventArgs e)
+        {
+        }
+
+        public void BoardClick(object sender, MouseButtonEventArgs e)
+        {
+            var p = e.GetPosition(this);
+            p = PrepareWindow.TranslatePoint(p, Board);
+            var x = Convert.ToInt32(p.X - 2);
+            var y = Convert.ToInt32(p.Y - 2);
+            if (x < 0 || y < 0 || x >= 300 || y >= 300)
+                return;
+            board.Click(x, y);
+        }
+
+        public void SetLighting(object sender, MouseEventArgs e)
+        {
+            DeleteBordersLighting();
+            var p = e.GetPosition(this);
+            p = PrepareWindow.TranslatePoint(p, Board);
+            var x = Convert.ToInt32(p.X - 1);
+            var y = Convert.ToInt32(p.Y - 1);
+            if (x < 0 || y < 0 || x >= 300 || y >= 300)
+                return;
+            var result = board.CanPutShip(x / 30, y / 30);
+            SolidColorBrush color;
+            if (result.Item1)
+            {
+                color = new SolidColorBrush(Colors.GreenYellow);
+            }
+            else
+            {
+                color = new SolidColorBrush(Colors.Red);
+            }
+
+            foreach (var tile in result.Item2)
+            {
+                var border = new Border();
+                border.Background = color;
+                border.BorderThickness = new Thickness(1);
+                border.BorderBrush = new SolidColorBrush(Colors.Navy);
+                Board.Children.Add(border);
+                Grid.SetColumn(border, tile.Item1);
+                Grid.SetRow(border, tile.Item2);
+                currentShip.Add(border);
+            }
+        }
+
+        public void DeleteLighting(object sender, MouseEventArgs e)
+        {
+            DeleteBordersLighting();
+        }
+
+        public void DeleteBordersLighting()
+        {
+            foreach (var border in currentShip)
+            {
+                Board.Children.Remove(border);
+            }
+            currentShip.Clear();
+        }
     }
 }
