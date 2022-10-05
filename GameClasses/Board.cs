@@ -52,5 +52,22 @@ public class Board
         }
     }
 
+    public void DeleteShip(int x, int y)
+    {
+        int[] movesX = { 1, -1, 0, 0 };
+        int[] movesY = { 0, 0, 1, -1 };
+        for (int i = 0; i < 4; ++i)
+        {
+            int currentX = x;
+            int currentY = y;
+            while (currentX >= 0 && currentX < 10 && currentY >= 0 && currentY < 10 && board[currentX, currentY])
+            {
+                board[currentX, currentY] = false;
+                currentX += movesX[i];
+                currentY += movesY[i];
+            }
+        }
+    }
+
     public static void Main(string[] args) {}
 }
