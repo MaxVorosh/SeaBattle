@@ -121,6 +121,8 @@ namespace SeaBattle
         {
             if (selectedShips == 10)
             {
+                var gameWindow = new GameWindow(board.GetBoard());
+                gameWindow.Show();
                 this.Close();
             }
         }

@@ -143,4 +143,9 @@ public class BoardViewModel
     {
         return board.board[x, y];
     }
+
+    public Board GetBoard()
+    {
+        return board;
+    }
 }
