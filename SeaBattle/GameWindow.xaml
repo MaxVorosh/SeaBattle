@@ -5,7 +5,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:local="clr-namespace:SeaBattle"
         mc:Ignorable="d"
-        Title="GameWindow" Height="450" Width="800">
+        Title="GameWindow" Height="450" Width="800" x:Name="Game">
     <Grid Background="Aquamarine">
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
@@ -17,7 +17,8 @@
         </Canvas>
         <Canvas Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Height="302" Width="302"
                 x:Name="ComputerBoard">
-            <Border BorderBrush="Navy" BorderThickness="1" Width="302" Height="302" />
+            <Border BorderBrush="Navy" BorderThickness="1" Width="302" Height="302" Background="Aquamarine"
+                    MouseDown="OppositeBoardClick"/>
         </Canvas>
     </Grid>
 </Window>

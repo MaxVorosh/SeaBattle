@@ -8,8 +8,8 @@ public class GameViewModel
 
     public GameViewModel(Board personBoard)
     {
-        Board randomBoard = generateRandomBoard();
-        this.game = new Game(personBoard, randomBoard);
+        Board randomBoard = GenerateRandomBoard();
+        game = new Game(personBoard, randomBoard);
     }
 
     private List<Tuple<int, int>> Shuffle(List<Tuple<int, int>> data)
@@ -24,7 +24,7 @@ public class GameViewModel
         return data;
     }
 
-    public Board generateRandomBoard()
+    public Board GenerateRandomBoard()
     {
         var rnd = new Random();
         List<Tuple<int, int>> tiles = new List<Tuple<int, int>>();
@@ -65,11 +65,11 @@ public class GameViewModel
                 int nextY = y;
                 if (isHorizontal[le])
                 {
-                    nextX += length[le];
+                    nextX += length[le] - 1;
                 }
                 else
                 {
-                    nextY += length[le];
+                    nextY += length[le] - 1;
                 }
 
                 if (randomBoard.CheckShipPosition(x, y, nextX, nextY))
@@ -80,5 +80,56 @@ public class GameViewModel
             }
         }
         return randomBoard;
+    }
+
+    public List<Tuple<int, int, int, bool>> GetShips()
+    {
+        bool[,] playerBoard = game.human.playerBoard.board;
+        List<Tuple<int, int, int, bool>> result = new List<Tuple<int, int, int, bool>>();
+        for (int i = 0; i < 10; ++i)
+        {
+            for (int j = 0; j < 10; ++j)
+            {
+                if ((i == 0 || !playerBoard[i - 1, j]) && (j == 0 || !playerBoard[i, j - 1]) && playerBoard[i, j])
+                {
+                    int moveX = 0, moveY = 0, x = i, y = j;
+                    bool isHorizontal = i == 9 || !playerBoard[i + 1, j];
+                    int cnt = 0;
+                    if (i == 9 || !playerBoard[i + 1, j])
+                        moveY = 1;
+                    else
+                        moveX = 1;
+                    while (x <= 9 && y <= 9 && playerBoard[x, y])
+                    {
+                        cnt++;
+                        x += moveX;
+                        y += moveY;
+                    }
+                    result.Add(new Tuple<int, int, int, bool>(i, j, cnt, isHorizontal));
+                }
+            }
+        }
+        return result;
+    }
+
+    public List<Tuple<int, int, bool>> MakeMove(int xCoord, int yCoord)
+    {
+        int x = yCoord / 30;
+        int y = xCoord / 30;
+        var result = game.MakeHumanMove(x, y);
+        for (int i = 0; i < result.Count; ++i)
+        {
+            result[i] = new Tuple<int, int, bool>(result[i].Item2, result[i].Item1, result[i].Item3);
+        }
+        return result;
+    }
+
+    public TileCondition GetCondition(int y, int x, bool isFirstPlayer)
+    {
+        if (isFirstPlayer)
+        {
+            return game.human.oppositeBoard.board[x, y];
+        }
+        return game.computer.oppositeBoard.board[x, y];
     }
 }

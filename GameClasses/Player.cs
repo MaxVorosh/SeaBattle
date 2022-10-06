@@ -8,7 +8,7 @@ public class Player
     public List<Tuple<int, int>> currentShip;
     private Random rnd;
     public bool isMoveStarted;
-    
+
     public Player(bool isComputer, Board playerBoard, Board oppositeBoard)
     {
         this.isComputer = isComputer;
@@ -27,7 +27,7 @@ public class Player
             minY -= 1;
             maxY += 1;
             x = minX;
-            if (minY < 0 || rnd.Next() % 2 == 0)
+            if (minY < 0 || oppositeBoard.board[x, minY] != TileCondition.Unknown || rnd.Next() % 2 == 0)
                 y = maxY;
             else
                 y = minY;
@@ -37,7 +37,7 @@ public class Player
             y = minY;
             minX -= 1;
             maxX += 1;
-            if (minX < 0 || rnd.Next() % 2 == 0)
+            if (minX < 0 || oppositeBoard.board[minX, y] != TileCondition.Unknown || rnd.Next() % 2 == 0)
                 x = maxX;
             else
                 x = minX;
@@ -46,18 +46,61 @@ public class Player
         return new Tuple<int, int>(x, y);
     }
 
-    public void UpdateDataAfterShot(int x, int y)
+    public List<Tuple<int, int, bool>> SetMissedShots(int x, int y)
+    {
+        var result = new List<Tuple<int, int, bool>>();
+        int[] movesX = { 1, -1, 0, 0, 1, 1, -1, -1};
+        int[] movesY = { 0, 0, 1, -1, 1, -1, 1, -1};
+        TileCondition[,] board = oppositeBoard.board;
+        for (int i = 0; i < 4; ++i)
+        {
+            int currentX = x;
+            int currentY = y;
+            while (currentX >= 0 && currentX < 10 && currentY >= 0 && currentY < 10 &&
+                   board[currentX, currentY] == TileCondition.Hit)
+            {
+                for (int k = 0; k < 8; ++k)
+                {
+                    int newX = currentX + movesX[k];
+                    int newY = currentY + movesY[k];
+                    if (newX >= 0 && newX < 10 && newY >= 0 && newY < 10 && board[newX, newY] == TileCondition.Unknown)
+                    {
+                        board[newX, newY] = TileCondition.Missed;
+                        result.Add(new Tuple<int, int, bool>(newX, newY, false));
+                    }
+                }
+                currentX += movesX[i];
+                currentY += movesY[i];
+            }
+        }
+
+        return result;
+    }
+
+    public List<Tuple<int, int, bool>> UpdateDataAfterShot(int x, int y)
     {
         var result = oppositeBoard.OpenTile(x, y);
+        var tiles = new List<Tuple<int, int, bool>>();
+        tiles.Add(new Tuple<int, int, bool>(x, y, true));
         if (result == ShootResult.Killed)
         {
             currentShip = new List<Tuple<int, int>>();
+            var missed = SetMissedShots(x, y);
+            foreach (var miss in missed)
+            {
+                tiles.Add(miss);
+            }
         }
-
-        if (result == ShootResult.Missed)
+        else if (result == ShootResult.Missed)
         {
             isMoveStarted = false;
         }
+        else
+        {
+            currentShip.Add(new Tuple<int, int>(x, y));
+        }
+
+        return tiles;
     }
 
     List<Tuple<int, int>> GetCanShootTiles()
@@ -77,12 +120,12 @@ public class Player
         return canShoot;
     }
 
-    public bool MakeComputerMove()
+    public List<Tuple<int, int, bool>> MakeComputerMove()
     {
         if (!isComputer)
-            return false;
+            return new List<Tuple<int, int, bool>>();
 
-        Tuple<int, int> newShot;
+        Tuple<int, int> newShot = new Tuple<int, int>(-1, -1);
         if (currentShip.Count >= 2)
         {
             int minX = currentShip[0].Item1, maxX = currentShip[0].Item1;
@@ -94,35 +137,48 @@ public class Player
                 minY = Math.Min(minY, currentShip[i].Item2);
                 maxY = Math.Max(maxY, currentShip[i].Item2);
             }
+
             newShot = GetNextComputerShot(minX, maxX, minY, maxY);
         }
         else if (currentShip.Count == 1)
         {
             Tuple<int, int>[] moves =
             {
-                new Tuple<int, int>(1, 0), new Tuple<int, int>(-1, 0), new Tuple<int, int>(0, -1), new Tuple<int, int>(0, 1)
+                new Tuple<int, int>(1, 0), new Tuple<int, int>(-1, 0), new Tuple<int, int>(0, -1),
+                new Tuple<int, int>(0, 1)
             };
-            int ind = rnd.Next() % 4;
-            newShot = new Tuple<int, int>(currentShip[0].Item1 + moves[ind].Item1,
-                currentShip[0].Item2 + moves[ind].Item2);
+            for (int i = 0; i < 4; ++i)
+            {
+                int ind = rnd.Next() % (4 - i) + i;
+                (moves[i], moves[ind]) = (moves[ind], moves[i]);
+            }
+
+            for (int i = 0; i < 4; ++i)
+            {
+                int newX = currentShip[0].Item1 + moves[i].Item1;
+                int newY = currentShip[0].Item2 + moves[i].Item2;
+                if (newX >= 0 && newY >= 0 && newX < 10 && newY < 10 &&
+                    oppositeBoard.board[newX, newY] == TileCondition.Unknown)
+                {
+                    newShot = new Tuple<int, int>(newX, newY);
+                }
+            }
         }
         else
         {
             List<Tuple<int, int>> canShoot = GetCanShootTiles();
             newShot = canShoot[rnd.Next() % canShoot.Count];
         }
-        UpdateDataAfterShot(newShot.Item1, newShot.Item2);
-        return true;
+        return UpdateDataAfterShot(newShot.Item1, newShot.Item2);
     }
 
-    public bool MakeHumanMove(int x, int y)
+    public List<Tuple<int, int, bool>> MakeHumanMove(int x, int y)
     {
         if (isComputer || oppositeBoard.IsShooted(x, y))
         {
-            return false;
+            return new List<Tuple<int, int, bool>>();
         }
-        UpdateDataAfterShot(x, y);
-        return true;
+        return UpdateDataAfterShot(x, y);
     }
 
     public bool IsLose()

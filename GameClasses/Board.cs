@@ -17,13 +17,13 @@ public class Board
         {
             new Tuple<int, int>(1, 0), new Tuple<int, int>(-1, 0), new Tuple<int, int>(0, -1),
             new Tuple<int, int>(0, 1), new Tuple<int, int>(-1, 1), new Tuple<int, int>(-1, -1),
-            new Tuple<int, int>(1, -1), new Tuple<int, int>(1, 1)
+            new Tuple<int, int>(1, -1), new Tuple<int, int>(1, 1), new Tuple<int, int>(0, 0)
         };
         for (int i = startX; i <= endX; ++i)
         {
             for (int j = startY; j <= endY; ++j)
             {
-                for (int k = 0; k < 8; ++k)
+                for (int k = 0; k < 9; ++k)
                 {
                     int newX = i + moves[k].Item1;
                     int newY = j + moves[k].Item2;

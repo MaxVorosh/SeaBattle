@@ -67,7 +67,7 @@ public class HideBoard
 
         if (IsShipKilled(x, y))
         {
-            RoundMissedShots(x, y);
+            //RoundMissedShots(x, y);
             return ShootResult.Killed;
         }
 
@@ -76,7 +76,6 @@ public class HideBoard
 
     public bool IsShipKilled(int x, int y)
     {
-        int[,] coords = { {x, y}, {x, y}, {x, y}, {x, y}}; 
         bool[] isMissed = new bool[4];
         Tuple<int, int>[] moves =
         {
@@ -86,16 +85,16 @@ public class HideBoard
         {
             for (int j = 0; j < 4; ++j)
             {
-                coords[j, 0] += moves[j].Item1;
-                coords[j, 1] += moves[j].Item2;
-                if (!isMissed[j] || !IsValidTile(coords[j, 0], coords[j, 1]))
+                int newX = x + moves[j].Item1;
+                int newY = y + moves[j].Item2;
+                if (isMissed[j] || !IsValidTile(newX, newY))
                     continue;
-                if (linkedBoard.board[coords[j, 0], coords[j, 1]] &&
-                    board[coords[j, 0], coords[j, 1]] == TileCondition.Unknown)
+                if (linkedBoard.board[newX, newY] &&
+                    board[newX, newY] == TileCondition.Unknown)
                 {
                     return false;
                 }
-                if (!linkedBoard.board[coords[j, 0], coords[j, 1]])
+                if (!linkedBoard.board[newX, newY])
                     isMissed[j] = true;
             }
         }

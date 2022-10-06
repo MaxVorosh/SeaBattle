@@ -14,31 +14,41 @@ public class Game
         result = Result.NotEnd;
     }
 
-    public void MakeHumanMove(int x, int y)
+    public List<Tuple<int, int, bool>> MakeHumanMove(int x, int y)
     {
-        if (result != Result.NotEnd || !human.MakeHumanMove(x, y))
+        human.isMoveStarted = true;
+        var moves = new List<Tuple<int, int, bool>>();
+        var humanMoves = human.MakeHumanMove(x, y);
+        if (result != Result.NotEnd || humanMoves.Count == 0)
         {
-            return;
+            return moves;
+        }
+        foreach (var move in humanMoves)
+        {
+            moves.Add(move);
         }
         if (computer.IsLose())
         {
             result = Result.PlayerWins;
-            return;
+            return moves;
         }
         if (human.isMoveStarted)
         {
-            return;
+            return moves;
         }
-
         computer.isMoveStarted = true;
         while (computer.isMoveStarted)
         {
-            computer.MakeComputerMove();
+            var computerMoves = computer.MakeComputerMove();
+            foreach (var move in computerMoves)
+            {
+                moves.Add(move);
+            }
         }
-
         if (human.IsLose())
         {
             result = Result.ComputerWins;
         }
+        return moves;
     }
 }

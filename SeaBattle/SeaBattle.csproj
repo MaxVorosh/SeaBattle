@@ -48,6 +48,10 @@
       <Resource Include="data\start.png" />
       <None Remove="data\start_aq.png" />
       <Resource Include="data\start_aq.png" />
+      <None Remove="data\cross.png" />
+      <Resource Include="data\cross.png" />
+      <None Remove="data\miss.png" />
+      <Resource Include="data\miss.png" />
     </ItemGroup>
 
 </Project>
