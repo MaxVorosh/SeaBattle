@@ -131,6 +131,12 @@ public partial class GameWindow : Window
             EndLabel.Text = "You win!";
         }
         gameEnded = true;
+        RestartButton.Visibility = Visibility.Visible;
+        var im = new Image();
+        string path =
+            "C:\\Users\\mavor\\OneDrive\\Рабочий стол\\ВУЗ\\Основы программирования\\SeaBattle\\SeaBattle\\data\\";
+        im.Source = new BitmapImage(new Uri(path + "restart_aq.png"));
+        RestartButton.Content = im;
     }
 
     private void DrawResult(int x, int y, bool isFirstPlayer, bool isCross)

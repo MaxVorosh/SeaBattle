@@ -27,7 +27,7 @@ public class Game
         {
             moves.Add(move);
         }
-        if (computer.IsLose())
+        if (human.IsWin())
         {
             result = Result.PlayerWins;
             return moves;
@@ -45,7 +45,7 @@ public class Game
                 moves.Add(move);
             }
         }
-        if (human.IsLose())
+        if (computer.IsWin())
         {
             result = Result.ComputerWins;
         }

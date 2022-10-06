@@ -30,8 +30,8 @@
         </Canvas>
         <TextBlock Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Width="60"
                    Height="30" x:Name="EndLabel" />
-        <Button Grid.Column="1" Grid.Row="2" VerticalAlignment="Top" HorizontalAlignment="Right" Width="60" Height="20"
-                Visibility="Hidden" Background="Aquamarine" Click="Restart">
+        <Button Grid.Column="1" Grid.Row="2" VerticalAlignment="Top" HorizontalAlignment="Right" Width="70" Height="35"
+                Visibility="Hidden" Background="Aquamarine" Click="Restart" x:Name="RestartButton">
             <Image Source="data\restart_aq.png" />
         </Button>
     </Grid>

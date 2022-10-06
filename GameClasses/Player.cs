@@ -181,7 +181,7 @@ public class Player
         return UpdateDataAfterShot(x, y);
     }
 
-    public bool IsLose()
+    public bool IsWin()
     {
         return oppositeBoard.aliveTiles == 0;
     }
