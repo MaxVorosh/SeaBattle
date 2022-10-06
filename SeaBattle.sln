@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SeaBattle", "SeaBattle\SeaB
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameClasses", "GameClasses\GameClasses.csproj", "{8281C6F6-C27D-4BDD-B4F5-51A745625339}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestSeaBattle", "TestSeaBattle\TestSeaBattle.csproj", "{15BD0004-E01D-4AD5-8E01-5DDBE0DF4B22}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{8281C6F6-C27D-4BDD-B4F5-51A745625339}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8281C6F6-C27D-4BDD-B4F5-51A745625339}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8281C6F6-C27D-4BDD-B4F5-51A745625339}.Release|Any CPU.Build.0 = Release|Any CPU
+		{15BD0004-E01D-4AD5-8E01-5DDBE0DF4B22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15BD0004-E01D-4AD5-8E01-5DDBE0DF4B22}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15BD0004-E01D-4AD5-8E01-5DDBE0DF4B22}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15BD0004-E01D-4AD5-8E01-5DDBE0DF4B22}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

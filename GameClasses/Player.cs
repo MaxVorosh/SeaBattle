@@ -103,7 +103,7 @@ public class Player
         return tiles;
     }
 
-    List<Tuple<int, int>> GetCanShootTiles()
+    public List<Tuple<int, int>> GetCanShootTiles()
     {
         List<Tuple<int, int>> canShoot = new List<Tuple<int, int>>();
         for (int i = 0; i < 10; ++i)
