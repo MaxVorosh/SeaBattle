@@ -14,12 +14,14 @@ public partial class GameWindow : Window
     private GameViewModel game;
     private List<Tuple<int, int, bool>> nextMoves;
     private bool isMoveStarted;
+    private bool gameEnded;
 
     public GameWindow(Board board)
     {
         game = new GameViewModel(board);
         nextMoves = new List<Tuple<int, int, bool>>();
         isMoveStarted = false;
+        gameEnded = false;
         InitializeComponent();
         SetGrid(PlayerBoard);
         SetGrid(ComputerBoard);
@@ -79,7 +81,7 @@ public partial class GameWindow : Window
 
     public void OppositeBoardClick(object sender, MouseButtonEventArgs e)
     {
-        if (isMoveStarted)
+        if (isMoveStarted || gameEnded)
         {
             return;
         }
@@ -111,6 +113,24 @@ public partial class GameWindow : Window
                 isFirst = false;
             }
         }
+
+        if (game.GetGameResult() != Result.NotEnd)
+        {
+            EndGame();
+        }
+    }
+
+    private void EndGame()
+    {
+        if (game.GetGameResult() == Result.ComputerWins)
+        {
+            EndLabel.Text = "Computer\nwins";
+        }
+        else
+        {
+            EndLabel.Text = "You win!";
+        }
+        gameEnded = true;
     }
 
     private void DrawResult(int x, int y, bool isFirstPlayer, bool isCross)
@@ -132,5 +152,12 @@ public partial class GameWindow : Window
         }
         Canvas.SetLeft(im, 30 * x + 2);
         Canvas.SetTop(im, 30 * y + 2);
+    }
+
+    public void Restart(object sender, RoutedEventArgs e)
+    {
+        var mainWindow = new MainWindow();
+        mainWindow.Show();
+        this.Close();
     }
 }

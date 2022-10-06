@@ -132,4 +132,9 @@ public class GameViewModel
         }
         return game.computer.oppositeBoard.board[x, y];
     }
+
+    public Result GetGameResult()
+    {
+        return game.result;
+    }
 }
