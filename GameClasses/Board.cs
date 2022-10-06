@@ -64,6 +64,10 @@ public class Board
     public int DeleteShip(int x, int y)
     {
         int result = 0;
+        if (!board[x, y])
+        {
+            return 0;
+        }
         int[] movesX = { 1, -1, 0, 0 };
         int[] movesY = { 0, 0, 1, -1 };
         for (int i = 0; i < 4; ++i)

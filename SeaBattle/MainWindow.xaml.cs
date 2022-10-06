@@ -26,6 +26,7 @@ namespace SeaBattle
         private Border?[,] ships;
         private Button currentButtonShip;
         private Stack<Button>[] hiddenButtons;
+        private int selectedShips;
         public MainWindow()
         {
             board = new BoardViewModel(new Board());
@@ -37,6 +38,7 @@ namespace SeaBattle
             {
                 hiddenButtons[i] = new Stack<Button>();
             }
+            selectedShips = 0;
             InitializeComponent();
             SetBoardGrid();
             SetButtons();
@@ -117,7 +119,10 @@ namespace SeaBattle
         
         public void StartGame(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            if (selectedShips == 10)
+            {
+                this.Close();
+            }
         }
 
         public void UpdateBoard()
@@ -164,12 +169,14 @@ namespace SeaBattle
                 currentButtonShip.Visibility = Visibility.Hidden;
                 hiddenButtons[board.GetLastLength() - 1].Push(currentButtonShip);
                 currentButtonShip = new Button();
+                selectedShips++;
                 return;
             }
 
             int shipLength = board.GetLastDeleteLength();
             var button = hiddenButtons[shipLength - 1].Pop();
             button.Visibility = Visibility.Visible;
+            selectedShips--;
         }
 
         public void SetLighting(object sender, MouseEventArgs e)

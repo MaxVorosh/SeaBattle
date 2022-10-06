@@ -25,3 +25,5 @@ C:\Users\mavor\OneDrive\Рабочий стол\ВУЗ\Основы програ
 C:\Users\mavor\OneDrive\Рабочий стол\ВУЗ\Основы программирования\SeaBattle\SeaBattle\bin\Debug\net6.0-windows\GameClasses.dll
 C:\Users\mavor\OneDrive\Рабочий стол\ВУЗ\Основы программирования\SeaBattle\SeaBattle\bin\Debug\net6.0-windows\GameClasses.pdb
 C:\Users\mavor\OneDrive\Рабочий стол\ВУЗ\Основы программирования\SeaBattle\SeaBattle\obj\Debug\net6.0-windows\SeaBattle.csproj.CopyComplete
+C:\Users\mavor\OneDrive\Рабочий стол\ВУЗ\Основы программирования\SeaBattle\SeaBattle\obj\Debug\net6.0-windows\GameWindow.g.cs
+C:\Users\mavor\OneDrive\Рабочий стол\ВУЗ\Основы программирования\SeaBattle\SeaBattle\obj\Debug\net6.0-windows\GameWindow.baml
