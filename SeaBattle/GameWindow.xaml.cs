@@ -11,6 +11,9 @@ namespace SeaBattle;
 
 public partial class GameWindow : Window
 {
+    /// <summary>
+    /// Interaction for GameWindow.xaml
+    /// </summary>
     private GameViewModel game;
     private List<Tuple<int, int, bool>> nextMoves;
     private bool isMoveStarted;
@@ -30,6 +33,7 @@ public partial class GameWindow : Window
 
     public void SetGrid(Canvas canvas)
     {
+        // Sets grid for particular canvas
         for (int i = 0; i < 10; ++i)
         {
             for (int j = 0; j < 10; ++j)
@@ -47,7 +51,7 @@ public partial class GameWindow : Window
     }
 
     public void SetShipsImages()
-    {
+    {   // Set ship images on player's canvas
         var ships = game.GetShips();
         foreach (var ship in ships)
         {
@@ -80,7 +84,7 @@ public partial class GameWindow : Window
     }
 
     public void OppositeBoardClick(object sender, MouseButtonEventArgs e)
-    {
+    {   // Event of click on computer's board
         if (isMoveStarted || gameEnded)
         {
             return;
@@ -101,7 +105,7 @@ public partial class GameWindow : Window
     }
 
     private void MakeNextMoves()
-    {
+    {   // Draw changed tiles
         bool isFirst = true;
         for (int i = 0; i < nextMoves.Count; ++i)
         {
@@ -121,7 +125,7 @@ public partial class GameWindow : Window
     }
 
     private void EndGame()
-    {
+    {   // Show end game object
         if (game.GetGameResult() == Result.ComputerWins)
         {
             EndLabel.Text = "Computer\nwins";
@@ -140,7 +144,7 @@ public partial class GameWindow : Window
     }
 
     private void DrawResult(int x, int y, bool isFirstPlayer, bool isCross)
-    {
+    {   // Draw changed tile
         var im = new Image();
         string path =
             "C:\\Users\\mavor\\OneDrive\\Рабочий стол\\ВУЗ\\Основы программирования\\SeaBattle\\SeaBattle\\data\\";
@@ -161,7 +165,7 @@ public partial class GameWindow : Window
     }
 
     public void Restart(object sender, RoutedEventArgs e)
-    {
+    {   // Open new window
         var mainWindow = new MainWindow();
         mainWindow.Show();
         this.Close();

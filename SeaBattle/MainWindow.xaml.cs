@@ -46,6 +46,7 @@ namespace SeaBattle
 
         public void SetButtons()
         {
+            // Set buttons of ships
             var names = new List<string>();
             var sizes = new List<int>();
             for (int i = 1; i <= 4; ++i)
@@ -75,6 +76,7 @@ namespace SeaBattle
 
         public void ShipClick(object sender, RoutedEventArgs e)
         {
+            // Event of click on the ship-button
             var button = (Button)e.Source;
             int length = ((int)button.Height - 1) / 30 + 1;
             board.SetShip(length);
@@ -83,6 +85,7 @@ namespace SeaBattle
 
         public void SetBoardGrid()
         {
+            // Set row- and column-definitions on the board, draw tiles
             for (int i = 0; i < 10; ++i)
             {
                 var rowDefinition = new RowDefinition();
@@ -109,16 +112,19 @@ namespace SeaBattle
 
         public void RotateCurrentShip(object sender, RoutedEventArgs e)
         {
+            // Event of change rotation of the next ships
             board.ChangeRotation();
         }
         
         public void DeleteCurrentShip(object sender, RoutedEventArgs e)
         {
+            // Event, that prepares to delete next ship
             board.PrepareToDelete();
         }
         
         public void StartGame(object sender, RoutedEventArgs e)
         {
+            // Open new window if all ships are set
             if (selectedShips == 10)
             {
                 var gameWindow = new GameWindow(board.GetBoard());
@@ -129,6 +135,7 @@ namespace SeaBattle
 
         public void UpdateBoard()
         {
+            // Set borders of added ships
             for (int i = 0; i < 10; ++i)
             {
                 for (int j = 0; j < 10; ++j)
@@ -154,6 +161,7 @@ namespace SeaBattle
 
         private void SetShip(object sender, MouseButtonEventArgs e)
         {
+            // Put ship on the board
             var p = e.GetPosition(this);
             p = PrepareWindow.TranslatePoint(p, Board);
             var x = Convert.ToInt32(p.X - 1);
@@ -217,11 +225,13 @@ namespace SeaBattle
 
         public void DeleteLighting(object sender, MouseEventArgs e)
         {
+            // Event of delete previous lighting
             DeleteBordersLighting();
         }
 
         public void DeleteBordersLighting()
         {
+            // Delete previous lighting
             foreach (var border in currentShip)
             {
                 Board.Children.Remove(border);
