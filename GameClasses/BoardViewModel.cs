@@ -2,6 +2,24 @@ namespace GameClasses;
 
 public class BoardViewModel
 {
+    /// <summary>
+    /// MVVM-type model that linked Prepare to game window and Board class
+    /// void ChangeRotation() - change rotation of future ships
+    /// void SetShip(int length) - sets current ship length to int length
+    /// Tuple<bool, List<Tuple<int, int>>> CanPutShip(int x, int y)
+    /// returns tuple. First parameter equals true if if we can put ship with memoried length when start tile = (x, y)
+    /// Second parameter - list of coords on the board, that ship located in
+    /// void PrepareToDelete() - next clicked ship will be delete
+    /// Tuple<int, int> GetTile(int xCoord, int yCoord) - returns tile by coords
+    /// ClickResult PutShip(int x, int y):
+    /// Tries put ship with memoried length in (x, y) coord. If success, put it and returns ClickResult.Put
+    /// Else does nothing and returns ClickResult.Sleep
+    /// ClickResult DeleteShip(int x, int y):
+    /// Tries delete ship one of the tiles of it (x, y). If success, returns ClickResult.Delete and delete ship
+    /// Else just returns ClickResult.Sleep
+    /// ClickResult Click(int xCoord, int yCoord) - delete or put ship - depends on prepareDelete
+    /// bool IsShip(int x, int y) - returns true if board[x, y] - is a part of a ship
+    /// </summary>
     private Board board;
     private int currentLength;
     private bool isHorizontal;
@@ -26,6 +44,7 @@ public class BoardViewModel
 
     public void SetShip(int length)
     {
+        prepareDelete = false;
         lastLength = currentLength;
         currentLength = length;
     }
@@ -40,7 +59,7 @@ public class BoardViewModel
             if (0 <= x && x < 10 && 0 <= y && y < 10)
             {
                 occupiedTiles.Add(new Tuple<int, int>(x, y));
-                if (i != currentLength - 1)
+                if (i != currentLength - 1) // If it's not end, update coords
                 {
                     if (isHorizontal)
                     {
@@ -76,13 +95,13 @@ public class BoardViewModel
         var canPut = CanPutShip(x, y);
         if (!canPut.Item1)
         {
-            lastLength = currentLength;
+            lastLength = currentLength; // Can't put ship
             currentLength = -1;
             return ClickResult.Sleep;
         }
 
         bool result;
-        if (isHorizontal)
+        if (isHorizontal) // Add ship depends on his orientation
         {
             result = board.AddShip(x, y, x + currentLength - 1, y);
         }
@@ -126,11 +145,13 @@ public class BoardViewModel
         var clickResult = ClickResult.Sleep;
         if (prepareDelete)
         {
+            // Delete ship branch
             prepareDelete = false;
             clickResult = DeleteShip(tile.Item2, tile.Item1);
         }
         if (currentLength != -1)
         {
+            // Put ship branch
             clickResult = PutShip(tile.Item2, tile.Item1);
         }
 

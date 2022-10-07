@@ -4,6 +4,17 @@ namespace GameClasses;
 
 public class GameViewModel
 {
+    /// <summary>
+    /// MVVM-type model that linked GameWindow and Game classes
+    /// Board GenerateRandomBoard() - returns board with random ships location
+    /// List<Tuple<int, int, int, bool>> GetShips():
+    /// Returns ships, that are on the board in format (xCoord, yCoord, Length of ship, is horizontal rotation)
+    /// List<Tuple<int, int, bool>> MakeMove(int xCoord, int yCoord):
+    /// Makes move on tile, that have (xCoord, yCoord) coords regarding of window
+    /// Returns changed tiles with bool mark
+    /// TileCondition GetCondition(int y, int x, bool isFirstPlayer):
+    /// returns information about tile (x, y) on the opposite board
+    /// </summary>
     private Game game;
 
     public GameViewModel(Board personBoard)
@@ -14,6 +25,7 @@ public class GameViewModel
 
     private List<Tuple<int, int>> Shuffle(List<Tuple<int, int>> data)
     {
+        // Shuffles list
         var rnd = new Random();
         for (int i = 0; i < data.Count; ++i)
         {
@@ -29,7 +41,7 @@ public class GameViewModel
         var rnd = new Random();
         List<Tuple<int, int>> tiles = new List<Tuple<int, int>>();
         bool[] isHorizontal = new bool[10];
-        List<int> length = new List<int>();
+        List<int> length = new List<int>(); // List of ship's length
         for (int i = 0; i < 10; ++i)
         {
             isHorizontal[i] = rnd.Next() % 2 == 0;
@@ -38,12 +50,12 @@ public class GameViewModel
                 tiles.Add(new Tuple<int, int>(i, j));
             }
         }
-        tiles = Shuffle(tiles);
+        tiles = Shuffle(tiles); // shuffled list with coords
         for (int i = 4; i >= 1; --i)
         {
             for (int j = 0; j < 5 - i; ++j)
             {
-                length.Add(i);
+                length.Add(i); 
             }
         }
 
@@ -57,6 +69,7 @@ public class GameViewModel
         var randomBoard = new Board();
         for (int le = 0; le < length.Count; ++le)
         {
+            // For length from big to small
             for (int i = 0; i < tiles.Count; ++i)
             {
                 int x = tiles[i].Item1;
@@ -71,10 +84,10 @@ public class GameViewModel
                 {
                     nextY += length[le] - 1;
                 }
-
+                // nextX, nextY - end of ship
                 if (randomBoard.CheckShipPosition(x, y, nextX, nextY))
                 {
-                    randomBoard.AddShip(x, y, nextX, nextY);
+                    randomBoard.AddShip(x, y, nextX, nextY); // If we can put ship on random tile - we do it
                     break;
                 }
             }
@@ -89,11 +102,12 @@ public class GameViewModel
         for (int i = 0; i < 10; ++i)
         {
             for (int j = 0; j < 10; ++j)
-            {
+            {   // Run for all coords
+                // If it is first ship tile
                 if ((i == 0 || !playerBoard[i - 1, j]) && (j == 0 || !playerBoard[i, j - 1]) && playerBoard[i, j])
                 {
-                    int moveX = 0, moveY = 0, x = i, y = j;
-                    bool isHorizontal = i == 9 || !playerBoard[i + 1, j];
+                    int moveX = 0, moveY = 0, x = i, y = j; // x, y - end coords of ship
+                    bool isHorizontal = i == 9 || !playerBoard[i + 1, j]; // if i + 1 not valid or i + 1 is empty
                     int cnt = 0;
                     if (i == 9 || !playerBoard[i + 1, j])
                         moveY = 1;
@@ -115,10 +129,11 @@ public class GameViewModel
     public List<Tuple<int, int, bool>> MakeMove(int xCoord, int yCoord)
     {
         int x = yCoord / 30;
-        int y = xCoord / 30;
+        int y = xCoord / 30; // Converts coords to tile
         var result = game.MakeHumanMove(x, y);
         for (int i = 0; i < result.Count; ++i)
         {
+            // Change x, y to present it to window
             result[i] = new Tuple<int, int, bool>(result[i].Item2, result[i].Item1, result[i].Item3);
         }
         return result;

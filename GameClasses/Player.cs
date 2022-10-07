@@ -44,7 +44,7 @@ public class Player
             minY -= 1;
             maxY += 1;
             x = minX;
-            if (minY < 0 || oppositeBoard.board[x, minY] != TileCondition.Unknown || rnd.Next() % 2 == 0)
+            if (minY < 0 || (oppositeBoard.board[x, minY] != TileCondition.Unknown || rnd.Next() % 2 == 0) && maxY < 10)
                 y = maxY; // If minY is not valid or random chooses maxY
             else
                 y = minY;
@@ -54,7 +54,7 @@ public class Player
             y = minY;
             minX -= 1;
             maxX += 1;
-            if (minX < 0 || oppositeBoard.board[minX, y] != TileCondition.Unknown || rnd.Next() % 2 == 0)
+            if (minX < 0 || (oppositeBoard.board[minX, y] != TileCondition.Unknown || rnd.Next() % 2 == 0) && maxX < 10)
                 x = maxX; // If minX is not valid or random chooses MaxX
             else
                 x = minX;
