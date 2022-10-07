@@ -2,6 +2,11 @@ namespace GameClasses;
 
 public class Game
 {
+    /// <summary>
+    /// Game class. Includes 2 players and game result
+    /// List<Tuple<int, int, bool>> MakeHumanMove(int x, int y):
+    /// Makes human move by shooting (x, y) tile. Than get computer's response. Returns changed tiles with bool marks 
+    /// </summary>
     public Player human;
     public Player computer;
     public Result result;
@@ -16,12 +21,12 @@ public class Game
 
     public List<Tuple<int, int, bool>> MakeHumanMove(int x, int y)
     {
-        human.isMoveStarted = true;
+        human.isMoveStarted = true; // Part of human move
         var moves = new List<Tuple<int, int, bool>>();
-        var humanMoves = human.MakeHumanMove(x, y);
+        var humanMoves = human.MakeHumanMove(x, y); // makes human move
         if (result != Result.NotEnd || humanMoves.Count == 0)
         {
-            return moves;
+            return moves; // If game ends or we can't shoot (x, y)
         }
         foreach (var move in humanMoves)
         {
@@ -30,16 +35,16 @@ public class Game
         if (human.IsWin())
         {
             result = Result.PlayerWins;
-            return moves;
+            return moves; // Game ends by human win
         }
         if (human.isMoveStarted)
         {
-            return moves;
+            return moves; // If human can shoot once again before computer
         }
-        computer.isMoveStarted = true;
+        computer.isMoveStarted = true; // Computer move part
         while (computer.isMoveStarted)
         {
-            var computerMoves = computer.MakeComputerMove();
+            var computerMoves = computer.MakeComputerMove(); // Makes computer move
             foreach (var move in computerMoves)
             {
                 moves.Add(move);
@@ -47,7 +52,7 @@ public class Game
         }
         if (computer.IsWin())
         {
-            result = Result.ComputerWins;
+            result = Result.ComputerWins; // Game ends by computer win
         }
         return moves;
     }
