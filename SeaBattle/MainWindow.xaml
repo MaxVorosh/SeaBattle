@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SeaBattle"
         mc:Ignorable="d"
-        Title="Prepare to game" Height="400" Width="800" x:Name="PrepareWindow">
+        Title="Prepare to game" Height="400" Width="800" x:Name="PrepareWindow" ResizeMode="NoResize">
     <Grid Background="Aquamarine">
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
