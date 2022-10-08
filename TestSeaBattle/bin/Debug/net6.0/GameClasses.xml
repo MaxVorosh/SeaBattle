@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GameClasses</name>
+    </assembly>
+    <members>
+        <member name="F:GameClasses.Board.board">
+            <summary>
+            Class of a visible board. Can add and delete ship and check if we can add ship on particular coords
+            bool CheckShipPosition(int startX, int startY, int endX, int endY):
+            returns true if we can add ship when up-left coord is (startX, startY) and down-right is (endX, endY)
+            bool AddShip(int startX, int startY, int endX, int endY)
+            tries add ship with up-left coord is (startX, startY) and down-right is (endX, endY)
+            If it's possible, it do it and returns true. Else do nothing and returns false
+            int DeleteShip(int x, int y) - tries to delete ship, one of the coords of that is (x, y)
+            returns 0 if it is not possible, else returns length of deleted ship
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "F:GameClasses.BoardViewModel.board" -->
+        <member name="F:GameClasses.ClickResult.Delete">
+            <summary>
+            Variations of what was happened when we click on the board in prepare to the game window
+            Delete - One ship was deletes
+            Put - One ship was added
+            Sleep - Nothing 
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "F:GameClasses.Game.human" -->
+        <!-- Badly formed XML comment ignored for member "F:GameClasses.GameViewModel.game" -->
+        <member name="F:GameClasses.HideBoard.board">
+            <summary>
+            Class of opponent's board. Include his board and our information about his board
+            Also include count of alive tiles (tiles with ships that not hit)
+            IsValidTile(int x, int y) - returns true if (x, y) tile is on the board
+            ShootResult OpenTile(int x, int y) - make shoot (x, y) tile
+            bool IsShipKilled(int x, int y) - check if ship killed
+            Return true if ship with (x, y) tile will be killed if we shoot (x, y)
+            bool IsShooted(int x, int y) - return true if we were shoot this tile before
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "F:GameClasses.Player.isComputer" -->
+        <member name="F:GameClasses.Result.PlayerWins">
+            <summary>
+            Variations of game result
+            </summary>
+        </member>
+        <member name="F:GameClasses.ShootResult.Missed">
+            <summary>
+            Variations of shoot result
+            </summary>
+        </member>
+        <member name="F:GameClasses.TileCondition.Unknown">
+            <summary>
+            Variations of information what we have about tile
+            </summary>
+        </member>
+    </members>
+</doc>
