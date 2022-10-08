@@ -16,9 +16,11 @@ public class Board
     /// </summary>
     public bool[,] board; // board[i, j] == true if there is a part of a ship in (i, j) tile
 
+    private int boardSize = 10;
+
     public Board()
     {
-        board = new bool[10, 10];
+        board = new bool[boardSize, boardSize];
     }
 
     public bool CheckShipPosition(int startX, int startY, int endX, int endY)
@@ -34,16 +36,16 @@ public class Board
             for (int j = startY; j <= endY; ++j)
             {
                 // Runs for every ship's coord
-                for (int k = 0; k < 9; ++k)
+                for (int k = 0; k < moves.Length; ++k)
                 {
                     int newX = i + moves[k].Item1;
                     int newY = j + moves[k].Item2; // Neighbour coords
-                    if (newX >= 0 && newY >= 0 && newX < 10 && newY < 10 && board[newX, newY])
+                    if (newX >= 0 && newY >= 0 && newX < boardSize && newY < boardSize && board[newX, newY])
                     {
                         return false; // There are other ship
                     }
 
-                    if (i < 0 || j < 0 || i >= 10 || j >= 10)
+                    if (i < 0 || j < 0 || i >= boardSize || j >= boardSize)
                     {
                         return false; // The ship's coord is out of the board
                     }
@@ -81,11 +83,11 @@ public class Board
         }
         int[] movesX = { 1, -1, 0, 0 };
         int[] movesY = { 0, 0, 1, -1 }; // Arrays set directions
-        for (int i = 0; i < 4; ++i)
+        for (int i = 0; i < movesX.Length; ++i)
         {
             int currentX = x;
             int currentY = y; // coords, that will be run for particular direction
-            while (currentX >= 0 && currentX < 10 && currentY >= 0 && currentY < 10 &&
+            while (currentX >= 0 && currentX < boardSize && currentY >= 0 && currentY < boardSize &&
                    (board[currentX, currentY] || (currentX == x && currentY == y))) 
             {
                 // Coords are valid and there is ship (or we already delete this part of ship)
@@ -100,6 +102,11 @@ public class Board
         }
 
         return result;
+    }
+
+    public int GetBoardSize()
+    {
+        return boardSize;
     }
 
     public static void Main(string[] args)

@@ -26,6 +26,8 @@ public class BoardViewModel
     private bool prepareDelete;
     private int lastDeleteResult;
     private int lastLength;
+    private int boardSize;
+    private const int tileSize = 30;
 
     public BoardViewModel(Board board)
     {
@@ -35,6 +37,7 @@ public class BoardViewModel
         prepareDelete = false;
         lastDeleteResult = -1;
         lastLength = -1;
+        boardSize = board.GetBoardSize();
     }
 
     public void ChangeRotation()
@@ -56,7 +59,7 @@ public class BoardViewModel
         int oldY = y;
         for (int i = 0; i < currentLength; ++i)
         {
-            if (0 <= x && x < 10 && 0 <= y && y < 10)
+            if (0 <= x && x < boardSize && 0 <= y && y < boardSize)
             {
                 occupiedTiles.Add(new Tuple<int, int>(x, y));
                 if (i != currentLength - 1) // If it's not end, update coords
@@ -87,7 +90,7 @@ public class BoardViewModel
 
     public Tuple<int, int> GetTile(int xCoord, int yCoord)
     {
-        return new Tuple<int, int>(xCoord / 30, yCoord / 30);
+        return new Tuple<int, int>(xCoord / tileSize, yCoord / tileSize);
     }
 
     public ClickResult PutShip(int x, int y)

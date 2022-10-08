@@ -18,10 +18,14 @@ public partial class GameWindow : Window
     private List<Tuple<int, int, bool>> nextMoves;
     private bool isMoveStarted;
     private bool gameEnded;
+    private int boardSize;
+    private int tileSize = 30;
+    private int thickness = 1;
 
     public GameWindow(Board board)
     {
         game = new GameViewModel(board);
+        boardSize = board.GetBoardSize();
         nextMoves = new List<Tuple<int, int, bool>>();
         isMoveStarted = false;
         gameEnded = false;
@@ -34,18 +38,18 @@ public partial class GameWindow : Window
     public void SetGrid(Canvas canvas)
     {
         // Sets grid for particular canvas
-        for (int i = 0; i < 10; ++i)
+        for (int i = 0; i < boardSize; ++i)
         {
-            for (int j = 0; j < 10; ++j)
+            for (int j = 0; j < boardSize; ++j)
             {
                 var border = new Border();
-                border.BorderThickness = new Thickness(1);
+                border.BorderThickness = new Thickness(thickness);
                 border.BorderBrush = new SolidColorBrush(Colors.Navy);
-                border.Width = 30;
-                border.Height = 30;
+                border.Width = tileSize;
+                border.Height = tileSize;
                 canvas.Children.Add(border);
-                Canvas.SetLeft(border, i * 30 + 1);
-                Canvas.SetTop(border, j * 30 + 1);
+                Canvas.SetLeft(border, i * tileSize + thickness);
+                Canvas.SetTop(border, j * tileSize + thickness);
             }
         }
     }
@@ -69,17 +73,17 @@ public partial class GameWindow : Window
             im.Source = bitmapImage;
             if (ship.Item4)
             {
-                im.Width = 30 * ship.Item3 - 2;
-                im.Height = 28;
+                im.Width = tileSize * ship.Item3 - 2 * thickness;
+                im.Height = tileSize - 2 * thickness;
             }
             else
             {
-                im.Width = 28;
-                im.Height = 30 * ship.Item3 - 2;
+                im.Width = tileSize - 2 * thickness;
+                im.Height = tileSize * ship.Item3 - 2 * thickness;
             }
             PlayerBoard.Children.Add(im);
-            Canvas.SetLeft(im, ship.Item2 * 30 + 2);
-            Canvas.SetTop(im, ship.Item1 * 30 + 2);
+            Canvas.SetLeft(im, ship.Item2 * tileSize + 2 * thickness);
+            Canvas.SetTop(im, ship.Item1 * tileSize + 2 * thickness);
         }
     }
 
@@ -93,9 +97,9 @@ public partial class GameWindow : Window
         isMoveStarted = true;
         var p = e.GetPosition(this);
         p = Game.TranslatePoint(p, ComputerBoard);
-        int x = (int)p.X - 1;
-        int y = (int)p.Y - 1;
-        if (x < 0 || x >= 300 || y < 0 || y >= 300)
+        int x = (int)p.X - thickness;
+        int y = (int)p.Y - thickness;
+        if (x < 0 || x >= boardSize * tileSize || y < 0 || y >= boardSize * tileSize)
         {
             return;
         }
@@ -150,8 +154,8 @@ public partial class GameWindow : Window
             "C:\\Users\\mavor\\OneDrive\\Рабочий стол\\ВУЗ\\Основы программирования\\SeaBattle\\SeaBattle\\data\\";
         string name = isCross ? "cross.png" : "miss.png";
         im.Source = new BitmapImage(new Uri(path + name));
-        im.Width = 28;
-        im.Height = 28;
+        im.Width = tileSize - 2 * thickness;
+        im.Height = tileSize - 2 * thickness;
         if (isFirstPlayer)
         {
             ComputerBoard.Children.Add(im);
@@ -160,8 +164,8 @@ public partial class GameWindow : Window
         {
             PlayerBoard.Children.Add(im);
         }
-        Canvas.SetLeft(im, 30 * x + 2);
-        Canvas.SetTop(im, 30 * y + 2);
+        Canvas.SetLeft(im, tileSize * x + 2 * thickness);
+        Canvas.SetTop(im, tileSize * y + 2 * thickness);
     }
 
     public void Restart(object sender, RoutedEventArgs e)

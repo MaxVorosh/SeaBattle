@@ -20,17 +20,20 @@ public class Player
     /// bool IsWin() - returns true if player win, else false
     /// </summary>
     public bool isComputer;
+
     public Board playerBoard;
     public HideBoard oppositeBoard;
     public List<Tuple<int, int>> currentShip; // Ship, that we hit
     private Random rnd;
     public bool isMoveStarted; // Is our turn
+    private int boardSize;
 
     public Player(bool isComputer, Board playerBoard, Board oppositeBoard)
     {
         this.isComputer = isComputer;
         this.playerBoard = playerBoard;
         this.oppositeBoard = new HideBoard(oppositeBoard);
+        boardSize = playerBoard.GetBoardSize();
         currentShip = new List<Tuple<int, int>>();
         rnd = new Random();
         isMoveStarted = false;
@@ -40,21 +43,25 @@ public class Player
     {
         int x, y;
         if (minX == maxX)
-        {   // Ship is Horizontal
+        {
+            // Ship is Horizontal
             minY -= 1;
             maxY += 1;
             x = minX;
-            if (minY < 0 || (oppositeBoard.board[x, minY] != TileCondition.Unknown || rnd.Next() % 2 == 0) && maxY < 10)
+            if (minY < 0 || (oppositeBoard.board[x, minY] != TileCondition.Unknown || rnd.Next() % 2 == 0) &&
+                maxY < boardSize)
                 y = maxY; // If minY is not valid or random chooses maxY
             else
                 y = minY;
         }
         else
-        {   //Ship is Vertical
+        {
+            //Ship is Vertical
             y = minY;
             minX -= 1;
             maxX += 1;
-            if (minX < 0 || (oppositeBoard.board[minX, y] != TileCondition.Unknown || rnd.Next() % 2 == 0) && maxX < 10)
+            if (minX < 0 || (oppositeBoard.board[minX, y] != TileCondition.Unknown || rnd.Next() % 2 == 0) &&
+                maxX < boardSize)
                 x = maxX; // If minX is not valid or random chooses MaxX
             else
                 x = minX;
@@ -66,26 +73,29 @@ public class Player
     public List<Tuple<int, int, bool>> SetMissedShots(int x, int y)
     {
         var result = new List<Tuple<int, int, bool>>();
-        int[] movesX = { 1, -1, 0, 0, 1, 1, -1, -1};
-        int[] movesY = { 0, 0, 1, -1, 1, -1, 1, -1}; // Arrays of neighbours of a particular tile
+        int[] movesX = { 1, -1, 0, 0, 1, 1, -1, -1 };
+        int[] movesY = { 0, 0, 1, -1, 1, -1, 1, -1 }; // Arrays of neighbours of a particular tile
         TileCondition[,] board = oppositeBoard.board;
         for (int i = 0; i < 4; ++i)
         {
             int currentX = x;
             int currentY = y; // Coords, that will be run in particular direction
-            while (currentX >= 0 && currentX < 10 && currentY >= 0 && currentY < 10 &&
+            while (currentX >= 0 && currentX < boardSize && currentY >= 0 && currentY < boardSize &&
                    board[currentX, currentY] == TileCondition.Hit) //If coords are valid and there's a hit ship there
             {
-                for (int k = 0; k < 8; ++k)
+                for (int k = 0; k < movesX.Length; ++k)
                 {
                     int newX = currentX + movesX[k];
                     int newY = currentY + movesY[k]; // NeighbourTile coords
-                    if (newX >= 0 && newX < 10 && newY >= 0 && newY < 10 && board[newX, newY] == TileCondition.Unknown)
-                    {   // Coords are valid and tile should be missed
+                    if (newX >= 0 && newX < boardSize && newY >= 0 && newY < boardSize &&
+                        board[newX, newY] == TileCondition.Unknown)
+                    {
+                        // Coords are valid and tile should be missed
                         board[newX, newY] = TileCondition.Missed;
                         result.Add(new Tuple<int, int, bool>(newX, newY, false));
                     }
                 }
+
                 currentX += movesX[i];
                 currentY += movesY[i];
             }
@@ -100,7 +110,8 @@ public class Player
         var tiles = new List<Tuple<int, int, bool>>();
         tiles.Add(new Tuple<int, int, bool>(x, y, true));
         if (result == ShootResult.Killed)
-        {   // Ship is killed
+        {
+            // Ship is killed
             currentShip = new List<Tuple<int, int>>(); // old ship is not exist
             var missed = SetMissedShots(x, y);
             foreach (var miss in missed)
@@ -109,11 +120,13 @@ public class Player
             }
         }
         else if (result == ShootResult.Missed)
-        {   // We missed
+        {
+            // We missed
             isMoveStarted = false;
         }
         else
-        {   // We hit but not kill
+        {
+            // We hit but not kill
             currentShip.Add(new Tuple<int, int>(x, y));
         }
 
@@ -123,9 +136,9 @@ public class Player
     public List<Tuple<int, int>> GetCanShootTiles()
     {
         List<Tuple<int, int>> canShoot = new List<Tuple<int, int>>();
-        for (int i = 0; i < 10; ++i)
+        for (int i = 0; i < boardSize; ++i)
         {
-            for (int j = 0; j < 10; ++j)
+            for (int j = 0; j < boardSize; ++j)
             {
                 // Runs for every board coord
                 if (!oppositeBoard.IsShooted(i, j))
@@ -145,7 +158,8 @@ public class Player
 
         Tuple<int, int> newShot = new Tuple<int, int>(-1, -1);
         if (currentShip.Count >= 2)
-        {   // We should choose one of 2 opportunities
+        {
+            // We should choose one of 2 opportunities
             int minX = currentShip[0].Item1, maxX = currentShip[0].Item1;
             int minY = currentShip[0].Item2, maxY = currentShip[0].Item2; // Ship coords
             for (int i = 1; i < currentShip.Count; ++i)
@@ -155,10 +169,12 @@ public class Player
                 minY = Math.Min(minY, currentShip[i].Item2);
                 maxY = Math.Max(maxY, currentShip[i].Item2);
             }
+
             newShot = GetNextComputerShot(minX, maxX, minY, maxY);
         }
         else if (currentShip.Count == 1)
-        {   // We should choose one of 4 opportunities
+        {
+            // We should choose one of 4 opportunities
             Tuple<int, int>[] moves =
             {
                 new Tuple<int, int>(1, 0), new Tuple<int, int>(-1, 0), new Tuple<int, int>(0, -1),
@@ -186,15 +202,18 @@ public class Player
             List<Tuple<int, int>> canShoot = GetCanShootTiles();
             newShot = canShoot[rnd.Next() % canShoot.Count]; // Get random tile, because we have no information
         }
+
         return UpdateDataAfterShot(newShot.Item1, newShot.Item2);
     }
 
     public List<Tuple<int, int, bool>> MakeHumanMove(int x, int y)
     {
         if (isComputer || oppositeBoard.IsShooted(x, y))
-        {   // Computers cannot make human moves; we cannot shoot one tile twice
-            return new List<Tuple<int, int, bool>>(); 
+        {
+            // Computers cannot make human moves; we cannot shoot one tile twice
+            return new List<Tuple<int, int, bool>>();
         }
+
         return UpdateDataAfterShot(x, y);
     }
 

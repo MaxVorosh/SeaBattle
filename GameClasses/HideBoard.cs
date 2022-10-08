@@ -13,14 +13,18 @@ public class HideBoard
     /// </summary>
     public TileCondition[,] board;
     public Board linkedBoard;
-    public int aliveTiles = 0;
+    public int aliveTiles;
+
+    private int boardSize;
 
     public HideBoard(Board linkedBoard)
     {
-        board = new TileCondition[10, 10];
-        for (int i = 0; i < 10; ++i)
+        aliveTiles = 0;
+        boardSize = linkedBoard.GetBoardSize();
+        board = new TileCondition[boardSize, boardSize];
+        for (int i = 0; i < boardSize; ++i)
         {
-            for (int j = 0; j < 10; ++j)
+            for (int j = 0; j < boardSize; ++j)
             {
                 board[i, j] = TileCondition.Unknown;
                 aliveTiles += Convert.ToInt32(linkedBoard.board[i, j]);

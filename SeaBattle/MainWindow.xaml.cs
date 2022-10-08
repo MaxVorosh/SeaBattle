@@ -27,14 +27,18 @@ namespace SeaBattle
         private Button currentButtonShip;
         private Stack<Button>[] hiddenButtons;
         private int selectedShips;
+        private int boardSize;
+        private int maxShipLength = 4;
+        private int tileSize;
         public MainWindow()
         {
             board = new BoardViewModel(new Board());
+            boardSize = board.GetBoard().GetBoardSize();
             currentShip = new List<Border>();
-            ships = new Border[10, 10];
+            ships = new Border[boardSize, boardSize];
             currentButtonShip = new Button();
-            hiddenButtons = new Stack<Button>[4];
-            for (int i = 0; i < 4; ++i)
+            hiddenButtons = new Stack<Button>[maxShipLength];
+            for (int i = 0; i < maxShipLength; ++i)
             {
                 hiddenButtons[i] = new Stack<Button>();
             }
@@ -49,20 +53,20 @@ namespace SeaBattle
             // Set buttons of ships
             var names = new List<string>();
             var sizes = new List<int>();
-            for (int i = 1; i <= 4; ++i)
+            for (int i = 1; i <= maxShipLength; ++i)
             {
-                for (int j = 0; j < 5 - i; ++j)
+                for (int j = 0; j < maxShipLength + 1 - i; ++j)
                 {
                     names.Add("ship" + i.ToString() + "_aq_s.png");
                     sizes.Add(i);
                 }
             }
 
-            for (int i = 0; i < 10; ++i)
+            for (int i = 0; i < maxShipLength * (maxShipLength + 1) / 2; ++i)
             {
                 var button = new Button();
-                button.Height = sizes[i] * 30 - 4 * (sizes[i] - 1);
-                button.Width = 30;
+                button.Height = sizes[i] * tileSize - 4 * (sizes[i] - 1);
+                button.Width = tileSize;
                 button.Click += new RoutedEventHandler(ShipClick);
                 button.Background = new SolidColorBrush(Colors.Aquamarine);
                 var img = new Image();
@@ -78,7 +82,7 @@ namespace SeaBattle
         {
             // Event of click on the ship-button
             var button = (Button)e.Source;
-            int length = ((int)button.Height - 1) / 30 + 1;
+            int length = ((int)button.Height - 1) / tileSize + 1;
             board.SetShip(length);
             currentButtonShip = button;
         }
@@ -86,19 +90,19 @@ namespace SeaBattle
         public void SetBoardGrid()
         {
             // Set row- and column-definitions on the board, draw tiles
-            for (int i = 0; i < 10; ++i)
+            for (int i = 0; i < boardSize; ++i)
             {
                 var rowDefinition = new RowDefinition();
-                rowDefinition.Height = new GridLength(30);
+                rowDefinition.Height = new GridLength(tileSize);
                 Board.RowDefinitions.Add(rowDefinition);
                 var columnDefinition = new ColumnDefinition();
-                columnDefinition.Width = new GridLength(30);
+                columnDefinition.Width = new GridLength(tileSize);
                 Board.ColumnDefinitions.Add(columnDefinition);
             }
 
-            for (int i = 0; i < 10; ++i)
+            for (int i = 0; i < boardSize; ++i)
             {
-                for (int j = 0; j < 10; ++j)
+                for (int j = 0; j < boardSize; ++j)
                 {
                     var borderTile = new Border();
                     borderTile.BorderBrush = new SolidColorBrush(Colors.Navy);
@@ -125,7 +129,7 @@ namespace SeaBattle
         public void StartGame(object sender, RoutedEventArgs e)
         {
             // Open new window if all ships are set
-            if (selectedShips == 10)
+            if (selectedShips == (maxShipLength + 1) *maxShipLength / 2)
             {
                 var gameWindow = new GameWindow(board.GetBoard());
                 gameWindow.Show();
@@ -136,9 +140,9 @@ namespace SeaBattle
         public void UpdateBoard()
         {
             // Set borders of added ships
-            for (int i = 0; i < 10; ++i)
+            for (int i = 0; i < boardSize; ++i)
             {
-                for (int j = 0; j < 10; ++j)
+                for (int j = 0; j < boardSize; ++j)
                 {
                     if (board.IsShip(i, j) && ships[i, j] == null)
                     {
@@ -166,7 +170,7 @@ namespace SeaBattle
             p = PrepareWindow.TranslatePoint(p, Board);
             var x = Convert.ToInt32(p.X - 1);
             var y = Convert.ToInt32(p.Y - 1);
-            if (x < 0 || y < 0 || x >= 300 || y >= 300)
+            if (x < 0 || y < 0 || x >= boardSize * tileSize || y >= boardSize * tileSize)
                 return;
             ClickResult moveResult = board.Click(x, y);
             if (moveResult == ClickResult.Sleep)
@@ -196,9 +200,9 @@ namespace SeaBattle
             p = PrepareWindow.TranslatePoint(p, Board);
             var x = Convert.ToInt32(p.X - 1);
             var y = Convert.ToInt32(p.Y - 1);
-            if (x < 0 || y < 0 || x >= 300 || y >= 300)
+            if (x < 0 || y < 0 || x >= boardSize * tileSize || y >= boardSize * tileSize)
                 return;
-            var result = board.CanPutShip(y / 30, x / 30);
+            var result = board.CanPutShip(y / tileSize, x / tileSize);
             SolidColorBrush color;
             if (result.Item1)
             {

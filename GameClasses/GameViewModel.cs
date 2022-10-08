@@ -17,9 +17,14 @@ public class GameViewModel
     /// </summary>
     private Game game;
 
+    private int boardSize;
+    private const int maxShip = 4;
+    private const int tileSize = 30;
+
     public GameViewModel(Board personBoard)
     {
         Board randomBoard = GenerateRandomBoard();
+        boardSize = personBoard.GetBoardSize();
         game = new Game(personBoard, randomBoard);
     }
 
@@ -40,20 +45,20 @@ public class GameViewModel
     {
         var rnd = new Random();
         List<Tuple<int, int>> tiles = new List<Tuple<int, int>>();
-        bool[] isHorizontal = new bool[10];
+        bool[] isHorizontal = new bool[boardSize];
         List<int> length = new List<int>(); // List of ship's length
-        for (int i = 0; i < 10; ++i)
+        for (int i = 0; i < boardSize; ++i)
         {
             isHorizontal[i] = rnd.Next() % 2 == 0;
-            for (int j = 0; j < 10; ++j)
+            for (int j = 0; j < boardSize; ++j)
             {
                 tiles.Add(new Tuple<int, int>(i, j));
             }
         }
         tiles = Shuffle(tiles); // shuffled list with coords
-        for (int i = 4; i >= 1; --i)
+        for (int i = maxShip; i >= 1; --i)
         {
-            for (int j = 0; j < 5 - i; ++j)
+            for (int j = 0; j < maxShip + 1 - i; ++j)
             {
                 length.Add(i); 
             }
@@ -99,21 +104,21 @@ public class GameViewModel
     {
         bool[,] playerBoard = game.human.playerBoard.board;
         List<Tuple<int, int, int, bool>> result = new List<Tuple<int, int, int, bool>>();
-        for (int i = 0; i < 10; ++i)
+        for (int i = 0; i <boardSize; ++i)
         {
-            for (int j = 0; j < 10; ++j)
+            for (int j = 0; j < boardSize; ++j)
             {   // Run for all coords
                 // If it is first ship tile
                 if ((i == 0 || !playerBoard[i - 1, j]) && (j == 0 || !playerBoard[i, j - 1]) && playerBoard[i, j])
                 {
                     int moveX = 0, moveY = 0, x = i, y = j; // x, y - end coords of ship
-                    bool isHorizontal = i == 9 || !playerBoard[i + 1, j]; // if i + 1 not valid or i + 1 is empty
+                    bool isHorizontal = i == boardSize - 1 || !playerBoard[i + 1, j]; // if i + 1 not valid or i + 1 is empty
                     int cnt = 0;
-                    if (i == 9 || !playerBoard[i + 1, j])
+                    if (i == boardSize - 1 || !playerBoard[i + 1, j])
                         moveY = 1;
                     else
                         moveX = 1;
-                    while (x <= 9 && y <= 9 && playerBoard[x, y])
+                    while (x <= boardSize - 1 && y <= boardSize - 1 && playerBoard[x, y])
                     {
                         cnt++;
                         x += moveX;
@@ -128,8 +133,8 @@ public class GameViewModel
 
     public List<Tuple<int, int, bool>> MakeMove(int xCoord, int yCoord)
     {
-        int x = yCoord / 30;
-        int y = xCoord / 30; // Converts coords to tile
+        int x = yCoord / tileSize;
+        int y = xCoord / tileSize; // Converts coords to tile
         var result = game.MakeHumanMove(x, y);
         for (int i = 0; i < result.Count; ++i)
         {
