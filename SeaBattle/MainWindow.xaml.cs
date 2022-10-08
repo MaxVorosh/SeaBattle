@@ -29,7 +29,7 @@ namespace SeaBattle
         private int selectedShips;
         private int boardSize;
         private int maxShipLength = 4;
-        private int tileSize;
+        private int tileSize = 30;
         public MainWindow()
         {
             board = new BoardViewModel(new Board());

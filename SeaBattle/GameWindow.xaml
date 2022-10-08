@@ -28,8 +28,8 @@
             <Border BorderBrush="Navy" BorderThickness="1" Width="302" Height="302" Background="Aquamarine"
                     MouseDown="OppositeBoardClick" />
         </Canvas>
-        <TextBlock Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Width="60"
-                   Height="30" x:Name="EndLabel" />
+        <TextBlock Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Width="80"
+                   Height="60" x:Name="EndLabel" />
         <Button Grid.Column="1" Grid.Row="2" VerticalAlignment="Top" HorizontalAlignment="Right" Width="70" Height="35"
                 Visibility="Hidden" Background="Aquamarine" Click="Restart" x:Name="RestartButton">
             <Image Source="data\restart_aq.png" />

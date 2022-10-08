@@ -23,8 +23,8 @@ public class GameViewModel
 
     public GameViewModel(Board personBoard)
     {
-        Board randomBoard = GenerateRandomBoard();
         boardSize = personBoard.GetBoardSize();
+        Board randomBoard = GenerateRandomBoard();
         game = new Game(personBoard, randomBoard);
     }
 

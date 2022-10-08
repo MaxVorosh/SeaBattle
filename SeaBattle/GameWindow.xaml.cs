@@ -136,8 +136,9 @@ public partial class GameWindow : Window
         }
         else
         {
-            EndLabel.Text = "You win!";
+            EndLabel.Text = "You\nwin!";
         }
+        EndLabel.FontSize = 14;
         gameEnded = true;
         RestartButton.Visibility = Visibility.Visible;
         var im = new Image();
