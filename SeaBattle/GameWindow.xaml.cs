@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -141,19 +143,26 @@ public partial class GameWindow : Window
         isMoveStarted = false;
     }
 
-    private void MakeNextMoves()
+    private async void MakeNextMoves()
     {   // Draw changed tiles
         bool isFirst = true;
         for (int i = 0; i < nextMoves.Count; ++i)
         {
             var move = nextMoves[i];
+            if (!isFirst && move.Item3)
+            {
+                await Task.Delay(500);
+            }
             var condition = game.GetCondition(move.Item1, move.Item2, isFirst);
             DrawResult(move.Item1, move.Item2, isFirst, condition == TileCondition.Hit);
             if (condition == TileCondition.Missed && move.Item3)
             {
                 isFirst = false;
+                EndLabel.Text = "Wait...";
             }
         }
+
+        EndLabel.Text = "Your turn";
 
         if (game.GetGameResult() != Result.NotEnd)
         {
