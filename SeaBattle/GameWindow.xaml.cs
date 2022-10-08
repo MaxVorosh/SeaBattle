@@ -140,7 +140,6 @@ public partial class GameWindow : Window
         }
         nextMoves = game.MakeMove(x, y);
         MakeNextMoves();
-        isMoveStarted = false;
     }
 
     private async void MakeNextMoves()
@@ -161,7 +160,7 @@ public partial class GameWindow : Window
                 EndLabel.Text = "Wait...";
             }
         }
-
+        isMoveStarted = false;
         EndLabel.Text = "Your turn";
 
         if (game.GetGameResult() != Result.NotEnd)
