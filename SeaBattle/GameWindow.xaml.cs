@@ -21,6 +21,7 @@ public partial class GameWindow : Window
     private int boardSize;
     private int tileSize = 30;
     private int thickness = 1;
+    private int deltaCanvas = 14;
 
     public GameWindow(Board board)
     {
@@ -32,7 +33,39 @@ public partial class GameWindow : Window
         InitializeComponent();
         SetGrid(PlayerBoard);
         SetGrid(ComputerBoard);
+        DrawNotation(PlayerNotation);
+        DrawNotation(ComputerNotation);
         SetShipsImages();
+    }
+
+    private void AddNotationTextBlock(int row, int column, string text, Canvas canvas, bool isLeft)
+    {
+        // Add one notation block
+        var textBlock = new TextBlock();
+        textBlock.Text = text;
+        canvas.Children.Add(textBlock);
+        if (isLeft)
+        {
+            Canvas.SetLeft(textBlock, 0);
+            Canvas.SetTop(textBlock, row * tileSize + deltaCanvas);
+        }
+        else
+        {
+            Canvas.SetLeft(textBlock, column * tileSize + deltaCanvas);
+            Canvas.SetTop(textBlock, boardSize * tileSize + deltaCanvas);
+        }
+        textBlock.FontWeight = FontWeights.Bold;
+        textBlock.FontSize = 10;
+    }
+    public void DrawNotation(Canvas canvas)
+    {
+        // Draw all notation
+        for (int i = 0; i < boardSize; ++i)
+        {
+            Char letter = Convert.ToChar('a' + i);
+            AddNotationTextBlock(boardSize - 1, i, letter.ToString(), canvas, false);
+            AddNotationTextBlock(i, 0, (boardSize - i).ToString(), canvas, true);
+        }
     }
 
     public void SetGrid(Canvas canvas)
