@@ -75,6 +75,7 @@ namespace SeaBattle
             }
             textBlock.FontWeight = FontWeights.Bold;
             textBlock.FontSize = 10;
+            textBlock.MouseDown += new MouseButtonEventHandler(SetShip);
         }
 
         private void UpdateNotation(int row, int column)
