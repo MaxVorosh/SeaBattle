@@ -30,6 +30,8 @@ namespace SeaBattle
         private int boardSize;
         private int maxShipLength = 4;
         private int tileSize = 30;
+        private TextBlock[] horizontalTextBlocks;
+        private TextBlock[] verticalTextBlocks;
         public MainWindow()
         {
             board = new BoardViewModel(new Board());
@@ -43,9 +45,63 @@ namespace SeaBattle
                 hiddenButtons[i] = new Stack<Button>();
             }
             selectedShips = 0;
+            horizontalTextBlocks = new TextBlock[boardSize];
+            verticalTextBlocks = new TextBlock[boardSize];
             InitializeComponent();
             SetBoardGrid();
             SetButtons();
+            DrawNotation();
+        }
+        
+        private void AddNotationTextBlock(int row, int column, string text, bool isLeft)
+        {
+            // Add one notation block
+            var textBlock = new TextBlock();
+            textBlock.Text = text;
+            Board.Children.Add(textBlock);
+            Grid.SetColumn(textBlock, column);
+            Grid.SetRow(textBlock, row);
+            if (isLeft)
+            {
+                textBlock.HorizontalAlignment = HorizontalAlignment.Left;
+                textBlock.VerticalAlignment = VerticalAlignment.Center;
+                verticalTextBlocks[row] = textBlock;
+            }
+            else
+            {
+                textBlock.HorizontalAlignment = HorizontalAlignment.Center;
+                textBlock.VerticalAlignment = VerticalAlignment.Bottom;
+                horizontalTextBlocks[column] = textBlock;
+            }
+            textBlock.FontWeight = FontWeights.Bold;
+            textBlock.FontSize = 10;
+        }
+
+        private void UpdateNotation(int row, int column)
+        {
+            // Update notation block after change of border
+            if (row == boardSize - 1)
+            {
+                Board.Children.Remove(horizontalTextBlocks[column]);
+                Char letter = Convert.ToChar('a' + column);
+                AddNotationTextBlock(row, column, letter.ToString(), false);
+            }
+            if (column == 0)
+            {
+                Board.Children.Remove(verticalTextBlocks[row]);
+                AddNotationTextBlock(row, column, (boardSize - row).ToString(), true);
+            }
+        }
+
+        public void DrawNotation()
+        {
+            // Draw all notation
+            for (int i = 0; i < boardSize; ++i)
+            {
+                Char letter = Convert.ToChar('a' + i);
+                AddNotationTextBlock(boardSize - 1, i, letter.ToString(), false);
+                AddNotationTextBlock(i, 0, (boardSize - i).ToString(), true);
+            }
         }
 
         public void SetButtons()
@@ -153,6 +209,7 @@ namespace SeaBattle
                         Board.Children.Add(ships[i, j]);
                         Grid.SetColumn(ships[i, j], j);
                         Grid.SetRow(ships[i, j], i);
+                        UpdateNotation(i, j);
                     }
                     else if (!board.IsShip(i, j) && ships[i, j] != null)
                     {
@@ -224,6 +281,7 @@ namespace SeaBattle
                 Grid.SetColumn(border, tile.Item2);
                 Grid.SetRow(border, tile.Item1);
                 currentShip.Add(border);
+                UpdateNotation(tile.Item1, tile.Item2);
             }
         }
 
